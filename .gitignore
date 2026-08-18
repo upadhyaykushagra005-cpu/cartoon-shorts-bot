@@ -1,0 +1,6 @@
+.env
+client_secret.json
+downloads/
+processed/
+__pycache__/
+*.pyc
