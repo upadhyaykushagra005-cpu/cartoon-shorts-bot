@@ -22,20 +22,23 @@ def upload_short(video_path, title, description):
 
     body = {
         "snippet": {
-            "title": f"{title} #Shorts",
+            "title": f"{title} | Classic Cartoon #Shorts",
             "description": (
                 f"{description}\n\n"
-                "Classic public domain cartoon - no copyright!\n\n"
-                "#shorts #cartoon #classic #vintage #animation #retro "
-                "#nostalgia #publicdomain #oldcartoons #90skids "
-                "#childhoodmemories #throwback"
+                "Who remembers watching this as a kid?\n\n"
+                "#shorts #cartoon #classicCartoon #superman #popeye "
+                "#bettyboop #vintage #animation #retro #nostalgia "
+                "#oldcartoons #childhoodmemories #throwback #cartoons "
+                "#classicanimation #vintagecartoon #kidscartoon"
             ),
             "tags": [
-                "shorts", "cartoon", "classic", "vintage", "animation",
-                "retro", "nostalgia", "public domain", "old cartoons",
-                "childhood memories", "throwback", "classic cartoons",
+                "shorts", "cartoon", "classic cartoon", "superman cartoon",
+                "popeye", "betty boop", "vintage cartoon", "animation",
+                "retro cartoon", "nostalgia", "old cartoons", "classic animation",
+                "childhood memories", "throwback", "kids cartoon",
+                "cartoon nostalgia", "old school cartoon", "vintage animation",
             ],
-            "categoryId": "1",
+            "categoryId": "24",
         },
         "status": {
             "privacyStatus": "public",

@@ -14,9 +14,11 @@ COLLECTIONS = [
     "collection:prelinger AND subject:animation AND mediatype:movies",
 ]
 
+# Ordered by popularity - most recognizable first, these get picked first
 KNOWN_ITEMS = [
-    # Superman (Fleischer) - all 17 confirmed public domain
-    "superman_mechanical_monsters",
+    # TIER 1 - Most iconic, highest search volume
+    "Steamboat_Willie",                          # Mickey Mouse - most famous cartoon ever
+    "superman_mechanical_monsters",              # Superman - stunning animation
     "Superman-BillionDollarLimited",
     "superman_arcticgiant",
     "superman_bulleteers",
@@ -26,31 +28,30 @@ KNOWN_ITEMS = [
     "superman_terroronthemidway",
     "superman_destroyinc",
     "superman_theundergroundworld",
-    # Betty Boop
+    "Popeye_Meets_Sindbad_the_Sailor",           # Popeye - very popular
+    "PopeyeMeetsAliBaba",
+    "popeye_floorFlusher",
+    "popeye_me_musical_nephews",
+
+    # TIER 2 - Well known characters
+    "betty_boop_minnie_the_moocher_1932",        # Betty Boop + Cab Calloway
+    "Betty_Boop_Snow_White_1933",
     "BettyBoop-IHeared1932",
     "Betty_Boops_Crazy_Inventions_1933",
-    "Betty_Boop_Snow_White_1933",
-    "betty_boop_minnie_the_moocher_1932",
     "bb_rhythmontheReservation",
     "bb_dizzyDishes",
     "The_Candid_Candidate",
-    # Popeye
-    "Popeye_Meets_Sindbad_the_Sailor",
-    "popeye_floorFlusher",
-    "popeye_me_musical_nephews",
-    "PopeyeMeetsAliBaba",
-    # Casper / Woody / Others
-    "CasperTheFriendlyGhost1945",
-    "WoodyWoodpeckerPantryPanic",
-    "Steamboat_Willie",
-    "FLIP_FROG-FIDDLESTICKS",
-    "PortkyInWackyland",
-    "AllThisAndRabbitStew1941",
-    "MightyMouse_WolfWolf1944",
-    # More classics
-    "TheMadScientist",
+    "CasperTheFriendlyGhost1945",                # Casper - nostalgic
+    "WoodyWoodpeckerPantryPanic",                # Woody Woodpecker
+    "PortkyInWackyland",                         # Porky Pig - Looney Tunes
+    "AllThisAndRabbitStew1941",                   # Bugs Bunny
+    "MightyMouse_WolfWolf1944",                  # Mighty Mouse
+
+    # TIER 3 - Classic but less mainstream
     "GulliverSTravels",
+    "TheMadScientist",
     "felix_the_cat_feline_follies_1919",
+    "FLIP_FROG-FIDDLESTICKS",
     "little_lulu_eggs_dont_bounce",
     "heckle_jeckle_talkingmagpies",
 ]
@@ -83,10 +84,8 @@ def _find_video_file(item):
 
 
 def _get_candidates():
-    candidates = []
-
-    for identifier in KNOWN_ITEMS:
-        candidates.append(identifier)
+    # Priority order - most popular first, no shuffling
+    candidates = list(KNOWN_ITEMS)
 
     for query in COLLECTIONS:
         try:
@@ -97,7 +96,6 @@ def _get_candidates():
         except Exception:
             continue
 
-    random.shuffle(candidates)
     return candidates
 
 
@@ -105,7 +103,16 @@ def _check_local_downloads():
     """Check already-downloaded files first before hitting the network."""
     video_exts = {".mp4", ".ogv", ".avi", ".mov", ".mkv", ".mpeg", ".mpg"}
     files = [f for f in DOWNLOADS_DIR.iterdir() if f.suffix.lower() in video_exts and f.stat().st_size > 500_000]
-    random.shuffle(files)
+
+    # Sort by priority - superman/popeye/betty boop first
+    priority_keywords = ["superman", "popeye", "betty", "boop", "casper", "woody", "bugs", "mickey", "steamboat"]
+    def sort_key(f):
+        name = f.stem.lower()
+        for i, kw in enumerate(priority_keywords):
+            if kw in name:
+                return i
+        return 100
+    files.sort(key=sort_key)
 
     for video_path in files:
         try:
