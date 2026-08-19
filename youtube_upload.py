@@ -17,7 +17,32 @@ def get_youtube_service():
     return build("youtube", "v3", credentials=credentials)
 
 
+def is_already_uploaded(title):
+    """Check if a video with this title already exists on the channel."""
+    try:
+        youtube = get_youtube_service()
+        request = youtube.search().list(
+            part="snippet",
+            forMine=True,
+            type="video",
+            q=title,
+            maxResults=5,
+        )
+        response = request.execute()
+        for item in response.get("items", []):
+            if title.lower() in item["snippet"]["title"].lower():
+                print(f"Already uploaded: {item['snippet']['title']}")
+                return True
+    except Exception:
+        pass
+    return False
+
+
 def upload_short(video_path, title, description):
+    if is_already_uploaded(title):
+        print(f"Skipping upload — '{title}' already exists on channel.")
+        return None
+
     youtube = get_youtube_service()
 
     body = {
